@@ -11,6 +11,7 @@
                 <ResourceDictionary Source="/Resources/ProcessStations.xaml"/>
                 <ResourceDictionary Source="/Resources/Styles/Expander.xaml"/>
                 <ResourceDictionary Source="/Resources/Styles/Toolbox.xaml"/>
+                <ResourceDictionary Source="/Resources/Styles/ToolboxItem.xaml"/>
                 <ResourceDictionary Source="/Resources/Styles/DesignerItem.xaml"/>
                 <ResourceDictionary Source="/Resources/Styles/Tooltip.xaml"/>
                 <ResourceDictionary Source="/Resources/Styles/StatusBar.xaml"/>
