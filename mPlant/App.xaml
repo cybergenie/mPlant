@@ -1,0 +1,21 @@
+﻿<Application x:Class="mPlant.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:mPlant"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Generic.xaml"/>                
+                <ResourceDictionary Source="/Resources/RibbonBar.xaml"/>                
+                <ResourceDictionary Source="/Resources/ProcessStations.xaml"/>
+                <ResourceDictionary Source="/Resources/Styles/Expander.xaml"/>
+                <ResourceDictionary Source="/Resources/Styles/Toolbox.xaml"/>
+                <ResourceDictionary Source="/Resources/Styles/DesignerItem.xaml"/>
+                <ResourceDictionary Source="/Resources/Styles/Tooltip.xaml"/>
+                <ResourceDictionary Source="/Resources/Styles/StatusBar.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
