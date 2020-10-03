@@ -1,17 +1,16 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:s="clr-namespace:mPlant">
-  
+
     <ControlTemplate x:Key="MoveThumbTemplate"
                      TargetType="{x:Type s:DragThumb}">
         <Rectangle Fill="Transparent" />
     </ControlTemplate>
-    
-    
+
+
 
     <!-- ResizeChrome -->
-    <Style TargetType="{x:Type Shape}"
-           x:Key="ThumbCorner">
+    <Style TargetType="{x:Type Shape}" x:Key="ThumbCorner">
         <Setter Property="SnapsToDevicePixels" Value="true" />
         <Setter Property="Stroke" Value="LightSlateGray" />
         <Setter Property="StrokeThickness" Value=".5" />
@@ -25,65 +24,40 @@
         </Setter>
     </Style>
 
-    <Style TargetType="{x:Type s:ResizeChrome}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type s:ResizeChrome}">
-                    <Grid IsHitTestVisible="False"
-                              Opacity="1"
-                              Margin="-3">
-                        <Rectangle SnapsToDevicePixels="True"
-                                       StrokeThickness="1"
-                                       StrokeDashArray ="4 4"
-                                       Margin="1">
-                            <Rectangle.Stroke>
-                                <SolidColorBrush Color="Gray"/>
-                            </Rectangle.Stroke>
-                        </Rectangle>
-                        <Ellipse Style="{StaticResource ThumbCorner}"
-                                     HorizontalAlignment="Left"
-                                     VerticalAlignment="Top" />
-                        <Ellipse Style="{StaticResource ThumbCorner}"
-                                     HorizontalAlignment="Right"
-                                     VerticalAlignment="Top" />
-                        <Ellipse Style="{StaticResource ThumbCorner}"
-                                     HorizontalAlignment="Left"
-                                     VerticalAlignment="Bottom" />
-                        <Ellipse Style="{StaticResource ThumbCorner}"
-                                     HorizontalAlignment="Right"
-                                     VerticalAlignment="Bottom" />
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+    <ControlTemplate x:Key="ResizeDecoratorTemplate" TargetType="{x:Type Control}">
+        <Grid IsHitTestVisible="False" Opacity="1" Margin="-3">
+            <Rectangle SnapsToDevicePixels="True" Margin="1" Stroke="Gray" StrokeDashArray="4"/>
+            <Ellipse Style="{StaticResource ThumbCorner}" HorizontalAlignment="Left" VerticalAlignment="Top" />
+            <Ellipse Style="{StaticResource ThumbCorner}" HorizontalAlignment="Right" VerticalAlignment="Top" />
+            <Ellipse Style="{StaticResource ThumbCorner}" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
+            <Ellipse Style="{StaticResource ThumbCorner}" HorizontalAlignment="Right" VerticalAlignment="Bottom" />
+        </Grid>
+    </ControlTemplate>
 
     <!-- DesignerItem -->
     <Style TargetType="{x:Type s:DesignerItem}">
-        <Setter Property="MinHeight"
-                Value="50" />
-        <Setter Property="MinWidth"
-                Value="50" />
-        <Setter Property="SnapsToDevicePixels"
-                Value="true" />
+        <Setter Property="MinHeight" Value="50" />
+        <Setter Property="MinWidth" Value="50" />
+        <Setter Property="SnapsToDevicePixels" Value="true" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type s:DesignerItem}">
-                    <Grid DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=.}">
+                    <Grid DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}">
                         <s:DragThumb x:Name="PART_MoveThumb"
                                      Cursor="SizeAll"
                                      Template="{StaticResource MoveThumbTemplate}" />
                         <ContentPresenter x:Name="PART_ContentPresenter"
                                           Content="{TemplateBinding ContentControl.Content}"
                                           Margin="{TemplateBinding Padding}" />
-                        <s:ResizeDecorator x:Name="PART_DesignerItemDecorator" />
+                        <Control x:Name="PART_ResizeDecorator"
+                                           Visibility="Collapsed"                                 
+                                           Template="{StaticResource ResizeDecoratorTemplate}"/>
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsSelected"
-                                 Value="True">
-                            <Setter TargetName="PART_DesignerItemDecorator"
-                                    Property="ShowDecorator"
-                                    Value="True" />
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="PART_ResizeDecorator"
+                                    Property="Visibility"
+                                    Value="Visible" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
