@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
@@ -7,48 +8,50 @@ namespace mPlant
 {
     public class DragThumb : Thumb
     {
-        private DesignerItem designerItem;
-        private DesignerCanvas designerCanvas;
+       
 
         public DragThumb()
         {
-            DragStarted += new DragStartedEventHandler(this.DragThumb_DragStarted);
-            DragDelta += new DragDeltaEventHandler(this.DragThumb_DragDelta);
+            base.DragDelta += new DragDeltaEventHandler(DragThumb_DragDelta);
         }
-
-        private void DragThumb_DragStarted(object sender, DragStartedEventArgs e)
-        {
-            this.designerItem = DataContext as DesignerItem;
-
-            if (this.designerItem != null)
-            {
-                this.designerCanvas = VisualTreeHelper.GetParent(this.designerItem) as DesignerCanvas;
-            }
-        }
-
+        
         private void DragThumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
-            if (this.designerItem != null && this.designerCanvas != null && this.designerItem.IsSelected)
+            DesignerItem designerItem = this.DataContext as DesignerItem;
+            DesignerCanvas designer = VisualTreeHelper.GetParent(designerItem) as DesignerCanvas;
+
+            if (designerItem != null && designer != null && designerItem.IsSelected)
             {
                 double minLeft = double.MaxValue;
                 double minTop = double.MaxValue;
 
-                foreach (DesignerItem item in this.designerCanvas.SelectedItems)
+                var designerItems = designer.SelectionService.CurrentSelection.OfType<DesignerItem>();
+
+                foreach (DesignerItem item in designerItems)
                 {
-                    minLeft = Math.Min(Canvas.GetLeft(item), minLeft);
-                    minTop = Math.Min(Canvas.GetTop(item), minTop);
+                    double left = Canvas.GetLeft(item);
+                    double top = Canvas.GetTop(item);
+
+                    minLeft = double.IsNaN(left) ? 0 : Math.Min(left, minLeft);
+                    minTop = double.IsNaN(top) ? 0 : Math.Min(top, minTop);
                 }
 
                 double deltaHorizontal = Math.Max(-minLeft, e.HorizontalChange);
                 double deltaVertical = Math.Max(-minTop, e.VerticalChange);
 
-                foreach (DesignerItem item in this.designerCanvas.SelectedItems)
+                foreach (DesignerItem item in designerItems)
                 {
-                    Canvas.SetLeft(item, Canvas.GetLeft(item) + deltaHorizontal);
-                    Canvas.SetTop(item, Canvas.GetTop(item) + deltaVertical);
+                    double left = Canvas.GetLeft(item);
+                    double top = Canvas.GetTop(item);
+
+                    if (double.IsNaN(left)) left = 0;
+                    if (double.IsNaN(top)) top = 0;
+
+                    Canvas.SetLeft(item, left + deltaHorizontal);
+                    Canvas.SetTop(item, top + deltaVertical);
                 }
 
-                this.designerCanvas.InvalidateMeasure();
+                designer.InvalidateMeasure();
                 e.Handled = true;
             }
         }

@@ -1,12 +1,43 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
 namespace mPlant
 {
-    public class DesignerItem : ContentControl
+    [TemplatePart(Name = "PART_DragThumb", Type = typeof(DragThumb))]
+    [TemplatePart(Name = "PART_ResizeDecorator", Type = typeof(Control))]
+    [TemplatePart(Name = "PART_ConnectorDecorator", Type = typeof(Control))]
+    [TemplatePart(Name = "PART_ContentPresenter", Type = typeof(ContentPresenter))]
+    public class DesignerItem : ContentControl, ISelectable, IGroupable
     {
+        #region ID
+        private Guid id;
+        public Guid ID
+        {
+            get { return id; }
+        }
+        #endregion
+
+        #region ParentID
+        public Guid ParentID
+        {
+            get { return (Guid)GetValue(ParentIDProperty); }
+            set { SetValue(ParentIDProperty, value); }
+        }
+        public static readonly DependencyProperty ParentIDProperty = DependencyProperty.Register("ParentID", typeof(Guid), typeof(DesignerItem));
+        #endregion
+
+        #region IsGroup
+        public bool IsGroup
+        {
+            get { return (bool)GetValue(IsGroupProperty); }
+            set { SetValue(IsGroupProperty, value); }
+        }
+        public static readonly DependencyProperty IsGroupProperty =
+            DependencyProperty.Register("IsGroup", typeof(bool), typeof(DesignerItem));
+        #endregion
         public bool IsSelected
         {
             get { return (bool)GetValue(IsSelectedProperty); }
@@ -18,17 +49,17 @@ namespace mPlant
                                       typeof(DesignerItem),
                                       new FrameworkPropertyMetadata(false));
 
-        public static readonly DependencyProperty MoveThumbTemplateProperty =
-            DependencyProperty.RegisterAttached("MoveThumbTemplate", typeof(ControlTemplate), typeof(DesignerItem));
+        public static readonly DependencyProperty DragThumbTemplateProperty =
+            DependencyProperty.RegisterAttached("DragThumbTemplate", typeof(ControlTemplate), typeof(DesignerItem));
 
-        public static ControlTemplate GetMoveThumbTemplate(UIElement element)
+        public static ControlTemplate GetDragThumbTemplate(UIElement element)
         {
-            return (ControlTemplate)element.GetValue(MoveThumbTemplateProperty);
+            return (ControlTemplate)element.GetValue(DragThumbTemplateProperty);
         }
 
-        public static void SetMoveThumbTemplate(UIElement element, ControlTemplate value)
+        public static void SetDragThumbTemplate(UIElement element, ControlTemplate value)
         {
-            element.SetValue(MoveThumbTemplateProperty, value);
+            element.SetValue(DragThumbTemplateProperty, value);
         }
 
         static DesignerItem()
@@ -36,9 +67,15 @@ namespace mPlant
             FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(DesignerItem), new FrameworkPropertyMetadata(typeof(DesignerItem)));
         }
 
-        public DesignerItem()
+        public DesignerItem(Guid id)
         {
-            this.Loaded += new RoutedEventHandler(this.DesignerItem_Loaded);
+            this.id = id;
+            this.Loaded += new RoutedEventHandler(DesignerItem_Loaded);
+        }
+
+        public DesignerItem()
+            : this(Guid.NewGuid())
+        {
         }
 
         protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
@@ -49,17 +86,19 @@ namespace mPlant
             if (designer != null)
             {
                 if ((Keyboard.Modifiers & (ModifierKeys.Shift | ModifierKeys.Control)) != ModifierKeys.None)
-                {
-                    this.IsSelected = !this.IsSelected;
-                }
-                else
-                {
-                    if (!this.IsSelected)
+                    if (this.IsSelected)
                     {
-                        designer.DeselectAll();
-                        this.IsSelected = true;
+                        designer.SelectionService.RemoveFromSelection(this);
                     }
+                    else
+                    {
+                        designer.SelectionService.AddToSelection(this);
+                    }
+                else if (!this.IsSelected)
+                {
+                    designer.SelectionService.SelectItem(this);
                 }
+                Focus();
             }
 
             e.Handled = false;
@@ -73,7 +112,7 @@ namespace mPlant
                     this.Template.FindName("PART_ContentPresenter", this) as ContentPresenter;
 
                 DragThumb thumb =
-                    this.Template.FindName("PART_MoveThumb", this) as DragThumb;
+                    this.Template.FindName("PART_DragThumb", this) as DragThumb;
 
                 if (contentPresenter != null && thumb != null)
                 {
@@ -83,7 +122,7 @@ namespace mPlant
                     if (contentVisual != null)
                     {
                         ControlTemplate template =
-                            DesignerItem.GetMoveThumbTemplate(contentVisual) as ControlTemplate;
+                            DesignerItem.GetDragThumbTemplate(contentVisual) as ControlTemplate;
 
                         if (template != null)
                         {

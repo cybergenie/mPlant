@@ -13,25 +13,17 @@ namespace mPlant
 {
     public class DesignerCanvas : Canvas
     {
-        private Point? dragStartPoint = null;
+        private Point? rubberbandSelectionStartPoint = null;
 
-        public IEnumerable<DesignerItem> SelectedItems
+        private SelectionService selectionService;
+        internal SelectionService SelectionService
         {
             get
             {
-                var selectedItems = from item in this.Children.OfType<DesignerItem>()
-                                    where item.IsSelected == true
-                                    select item;
+                if (selectionService == null)
+                    selectionService = new SelectionService(this);
 
-                return selectedItems;
-            }
-        }
-
-        public void DeselectAll()
-        {
-            foreach (DesignerItem item in this.SelectedItems)
-            {
-                item.IsSelected = false;
+                return selectionService;
             }
         }
 
@@ -40,8 +32,14 @@ namespace mPlant
             base.OnMouseDown(e);
             if (e.Source == this)
             {
-                this.dragStartPoint = new Point?(e.GetPosition(this));
-                this.DeselectAll();
+                // in case that this click is the start of a 
+                // drag operation we cache the start point
+                this.rubberbandSelectionStartPoint = new Point?(e.GetPosition(this));
+
+                // if you click directly on the canvas all 
+                // selected items are 'de-selected'
+                SelectionService.ClearSelection();
+                Focus();
                 e.Handled = true;
             }
         }
@@ -50,76 +48,78 @@ namespace mPlant
         {
             base.OnMouseMove(e);
 
+            // if mouse button is not pressed we have no drag operation, ...
             if (e.LeftButton != MouseButtonState.Pressed)
-            {
-                this.dragStartPoint = null;
-            }
+                this.rubberbandSelectionStartPoint = null;
 
-            if (this.dragStartPoint.HasValue)
+            // ... but if mouse button is pressed and start
+            // point value is set we do have one
+            if (this.rubberbandSelectionStartPoint.HasValue)
             {
+                // create rubberband adorner
                 AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(this);
                 if (adornerLayer != null)
                 {
-                    RubberbandAdorner adorner = new RubberbandAdorner(this, this.dragStartPoint);
+                    RubberbandAdorner adorner = new RubberbandAdorner(this, rubberbandSelectionStartPoint);
                     if (adorner != null)
                     {
                         adornerLayer.Add(adorner);
                     }
                 }
-
-                e.Handled = true;
             }
+            e.Handled = true;
         }
 
         protected override void OnDrop(DragEventArgs e)
         {
             base.OnDrop(e);
-            string xamlString = e.Data.GetData("DESIGNER_ITEM") as string;
-            if (!String.IsNullOrEmpty(xamlString))
+            DragObject dragObject = e.Data.GetData(typeof(DragObject)) as DragObject;
+            if (dragObject != null && !String.IsNullOrEmpty(dragObject.Xaml))
             {
                 DesignerItem newItem = null;
-                FrameworkElement content = XamlReader.Load(XmlReader.Create(new StringReader(xamlString))) as FrameworkElement;
+                Object content = XamlReader.Load(XmlReader.Create(new StringReader(dragObject.Xaml)));
+                double scale = 2;
 
                 if (content != null)
                 {
                     newItem = new DesignerItem();
                     newItem.Content = content;
 
+                    StackPanel panel = content as StackPanel;
+                    panel.Orientation = Orientation.Vertical;
+                    Image image = panel.Children[0] as Image;
+                    Label label = panel.Children[1] as Label;
+
+                    label.HorizontalContentAlignment = HorizontalAlignment.Center;
+
                     Point position = e.GetPosition(this);
-                    if (content.MinHeight != 0 && content.MinWidth != 0)
+
+                    if (dragObject.DesiredSize.HasValue)
                     {
-                        newItem.Width = content.MinWidth * 2; ;
-                        newItem.Height = content.MinHeight * 2;
+                        Size desiredSize = dragObject.DesiredSize.Value;
+                        newItem.Width = desiredSize.Width;
+                        newItem.Height = desiredSize.Height;
+
+                        DesignerCanvas.SetLeft(newItem, Math.Max(0, position.X - newItem.Width / 2));
+                        DesignerCanvas.SetTop(newItem, Math.Max(0, position.Y - newItem.Height / 2));
+                        image.Width *= scale;
+                        image.Height *= scale;
                     }
                     else
                     {
-                        newItem.Width = 40;
-                        newItem.Height = 60;
+                        DesignerCanvas.SetLeft(newItem, Math.Max(0, position.X));
+                        DesignerCanvas.SetTop(newItem, Math.Max(0, position.Y));
+                        image.Width = 36;
+                        image.Height = 36;
                     }
-                    if(content.GetType().Name == "StackPanel")
-                    {
-                        var tempStackPanel = (StackPanel)newItem.Content;
-                        tempStackPanel.Orientation = Orientation.Vertical;
-                        tempStackPanel.HorizontalAlignment = HorizontalAlignment.Center;
-                        tempStackPanel.VerticalAlignment = VerticalAlignment.Center;
-                        if(tempStackPanel.Children[0].GetType().Name=="Image")
-                        {
-                            var tempImg = (Image)tempStackPanel.Children[0];
-                            tempImg.Width = 2 * tempImg.Width;
-                            tempImg.Height = 2 * tempImg.Height;
-                        }
-                        if (tempStackPanel.Children[1].GetType().Name == "Label")
-                        {
-                            var tempLabel = (Label)tempStackPanel.Children[1];
-                            tempLabel.HorizontalContentAlignment = HorizontalAlignment.Center;
-                        }
-                    }
-                    DesignerCanvas.SetLeft(newItem, Math.Max(0, position.X - newItem.Width / 2));
-                    DesignerCanvas.SetTop(newItem, Math.Max(0, position.Y - newItem.Height / 2));
-                    this.Children.Add(newItem);
 
-                    this.DeselectAll();
-                    newItem.IsSelected = true;
+                    Canvas.SetZIndex(newItem, this.Children.Count);
+                    this.Children.Add(newItem);
+                    //SetConnectorDecoratorTemplate(newItem);
+
+                    //update selection
+                    this.SelectionService.SelectItem(newItem);
+                    newItem.Focus();
                 }
 
                 e.Handled = true;

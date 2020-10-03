@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
+using System.Windows.Media;
 
 namespace mPlant
 {
@@ -25,29 +26,36 @@ namespace mPlant
         {
             base.OnMouseMove(e);
             if (e.LeftButton != MouseButtonState.Pressed)
-            {
                 this.dragStartPoint = null;
-            }
 
             if (this.dragStartPoint.HasValue)
             {
-                Point position = e.GetPosition(this);
-                if ((SystemParameters.MinimumHorizontalDragDistance <=
-                    Math.Abs((double)(position.X - this.dragStartPoint.Value.X))) ||
-                    (SystemParameters.MinimumVerticalDragDistance <=
-                    Math.Abs((double)(position.Y - this.dragStartPoint.Value.Y))))
-                {
-                    string xamlString = XamlWriter.Save(this.Content);
-                    DataObject dataObject = new DataObject("DESIGNER_ITEM", xamlString);
+                // XamlWriter.Save() has limitations in exactly what is serialized,
+                // see SDK documentation; short term solution only;
+                string xamlString = XamlWriter.Save(this.Content);
+                DragObject dataObject = new DragObject();
+                dataObject.Xaml = xamlString;
 
-                    if (dataObject != null)
-                    {
-                        DragDrop.DoDragDrop(this, dataObject, DragDropEffects.Copy);
-                    }
+                StackPanel panel = VisualTreeHelper.GetParent(this) as StackPanel;
+                if (panel != null)
+                {
+                    // desired size for DesignerCanvas is the stretched Toolbox item size                    
+                    dataObject.DesiredSize = new Size(36,50);
                 }
+
+                DragDrop.DoDragDrop(this, dataObject, DragDropEffects.Copy);
 
                 e.Handled = true;
             }
         }
+    }
+
+    public class DragObject
+    {
+        // 序列化组件内容
+        public String Xaml { get; set; }
+
+        // 拖拽组件的尺寸
+        public Size? DesiredSize { get; set; }
     }
 }

@@ -8,7 +8,6 @@
     </ControlTemplate>
 
 
-
     <!-- ResizeChrome -->
     <Style TargetType="{x:Type Shape}" x:Key="ThumbCorner">
         <Setter Property="SnapsToDevicePixels" Value="true" />
@@ -55,9 +54,7 @@
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="PART_ResizeDecorator"
-                                    Property="Visibility"
-                                    Value="Visible" />
+                            <Setter TargetName="PART_ResizeDecorator" Property="Visibility" Value="Visible" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
