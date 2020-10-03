@@ -1,0 +1,45 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:s="clr-namespace:mPlant">
+    <Style x:Key="StationImageStyle" TargetType="Image">
+        <Setter Property="IsHitTestVisible" Value="False"/>
+        <Setter Property="Width" Value="16"/>
+        <Setter Property="Height" Value="16"/>
+    </Style>
+    <Style x:Key="StationPanelStyle" TargetType="StackPanel">
+        <Setter Property="Orientation" Value="Horizontal"/>
+    </Style>
+    <s:Toolbox x:Key="Stations"
+               ItemSize="65,65">
+        <ItemsControl.Items>           
+            <StackPanel Style="{StaticResource StationPanelStyle}">                
+                <Image Grid.Column="0" Source="/Resources/Images/Start.png" Style="{StaticResource StationImageStyle}"/>
+                <Label Grid.Column="1" Content="起始"/>
+            </StackPanel>
+            <StackPanel Style="{StaticResource StationPanelStyle}">                
+                <Image Grid.Column="0" Source="/Resources/Images/Process.png" Style="{StaticResource StationImageStyle}"/>
+                <Label Grid.Column="1" Content="线体"/>
+            </StackPanel>
+            <StackPanel Style="{StaticResource StationPanelStyle}">               
+                <Image Grid.Column="0" Source="/Resources/Images/Buffer.png" Style="{StaticResource StationImageStyle}"/>
+                <Label Grid.Column="1" Content="缓存区"/>
+            </StackPanel>
+            <StackPanel Style="{StaticResource StationPanelStyle}">                
+                <Image Grid.Column="0" Source="/Resources/Images/End.png" Style="{StaticResource StationImageStyle}"/>
+                <Label Grid.Column="1" Content="结束"/>
+            </StackPanel>
+            <!--<StackPanel Style="{StaticResource StationItemStyle}">
+                <Image Source="/Resources/Images/Process.png" Style="{StaticResource StationImageStyle}"/>
+                <Label Content="线体"/>
+            </StackPanel>
+            <StackPanel Style="{StaticResource StationItemStyle}">
+                <Image Source="/Resources/Images/Buffer.png" Style="{StaticResource StationImageStyle}"/>
+                <Label Content="缓存区"/>
+            </StackPanel>
+            <StackPanel Style="{StaticResource StationItemStyle}">
+                <Image Source="/Resources/Images/End.png" Style="{StaticResource StationImageStyle}"/>
+                <Label Content="结束"/>
+            </StackPanel>-->
+            </ItemsControl.Items>
+    </s:Toolbox>   
+</ResourceDictionary>
