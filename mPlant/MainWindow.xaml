@@ -49,7 +49,7 @@
                                   Background="Transparent"
                                   HorizontalScrollBarVisibility="Auto"
                                   VerticalScrollBarVisibility="Auto">
-                                    <s:DesignerCanvas x:Name="MyDesignerCanvas"                                          
+                                    <s:DesignerCanvas x:Name="NewProject"                                          
                                           AllowDrop="True"
                                           Background="White">
                                     </s:DesignerCanvas>

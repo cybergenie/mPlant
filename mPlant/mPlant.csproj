@@ -155,8 +155,4 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Adorners\" />
-  </ItemGroup>
-
 </Project>

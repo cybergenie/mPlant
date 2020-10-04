@@ -40,7 +40,7 @@ namespace mPlant
                 if (panel != null)
                 {
                     // desired size for DesignerCanvas is the stretched Toolbox item size                    
-                    dataObject.DesiredSize = new Size(36,50);
+                    dataObject.DesiredSize = new Size(50,50);
                 }
 
                 DragDrop.DoDragDrop(this, dataObject, DragDropEffects.Copy);

@@ -11,7 +11,7 @@ using System.Xml;
 
 namespace mPlant
 {
-    public class DesignerCanvas : Canvas
+    public partial class DesignerCanvas : Canvas
     {
         private Point? rubberbandSelectionStartPoint = null;
 
@@ -115,7 +115,7 @@ namespace mPlant
 
                     Canvas.SetZIndex(newItem, this.Children.Count);
                     this.Children.Add(newItem);
-                    //SetConnectorDecoratorTemplate(newItem);
+                    SetConnectorDecoratorTemplate(newItem);
 
                     //update selection
                     this.SelectionService.SelectItem(newItem);
@@ -150,6 +150,18 @@ namespace mPlant
             size.Width += 10;
             size.Height += 10;
             return size;
+        }
+
+
+        private void SetConnectorDecoratorTemplate(DesignerItem item)
+        {
+            if (item.ApplyTemplate() && item.Content is UIElement)
+            {
+                ControlTemplate template = DesignerItem.GetConnectorDecoratorTemplate(item.Content as UIElement);
+                Control decorator = item.Template.FindName("PART_ConnectorDecorator", item) as Control;
+                if (decorator != null && template != null)
+                    decorator.Template = template;
+            }
         }
     }
 }
