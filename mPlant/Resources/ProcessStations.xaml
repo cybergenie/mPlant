@@ -27,19 +27,7 @@
             <StackPanel Style="{StaticResource StationPanelStyle}">                
                 <Image Grid.Column="0" Source="/Resources/Images/End.png" Style="{StaticResource StationImageStyle}"/>
                 <Label Grid.Column="1" Content="结束"/>
-            </StackPanel>
-            <!--<StackPanel Style="{StaticResource StationItemStyle}">
-                <Image Source="/Resources/Images/Process.png" Style="{StaticResource StationImageStyle}"/>
-                <Label Content="线体"/>
-            </StackPanel>
-            <StackPanel Style="{StaticResource StationItemStyle}">
-                <Image Source="/Resources/Images/Buffer.png" Style="{StaticResource StationImageStyle}"/>
-                <Label Content="缓存区"/>
-            </StackPanel>
-            <StackPanel Style="{StaticResource StationItemStyle}">
-                <Image Source="/Resources/Images/End.png" Style="{StaticResource StationImageStyle}"/>
-                <Label Content="结束"/>
-            </StackPanel>-->
+            </StackPanel>           
             </ItemsControl.Items>
-    </s:Toolbox>   
+    </s:Toolbox> 
 </ResourceDictionary>
