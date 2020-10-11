@@ -47,6 +47,7 @@ namespace mPlant
             {
                 item.IsSelected = true;
                 CurrentSelection.Add(item);
+                
             }
         }
 

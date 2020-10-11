@@ -12,19 +12,19 @@
     <s:Toolbox x:Key="Stations"
                ItemSize="65,65">
         <ItemsControl.Items>           
-            <StackPanel Style="{StaticResource StationPanelStyle}">                
+            <StackPanel x:Name="Station_Start" Style="{StaticResource StationPanelStyle}">
                 <Image Grid.Column="0" Source="/Resources/Images/Start.png" Style="{StaticResource StationImageStyle}"/>
                 <Label Grid.Column="1" Content="起始"/>
             </StackPanel>
-            <StackPanel Style="{StaticResource StationPanelStyle}">                
+            <StackPanel x:Name="Station_Process" Style="{StaticResource StationPanelStyle}">                
                 <Image Grid.Column="0" Source="/Resources/Images/Process.png" Style="{StaticResource StationImageStyle}"/>
                 <Label Grid.Column="1" Content="线体"/>
             </StackPanel>
-            <StackPanel Style="{StaticResource StationPanelStyle}">               
+            <StackPanel x:Name="Station_Buffer" Style="{StaticResource StationPanelStyle}">               
                 <Image Grid.Column="0" Source="/Resources/Images/Buffer.png" Style="{StaticResource StationImageStyle}"/>
                 <Label Grid.Column="1" Content="缓存区"/>
             </StackPanel>
-            <StackPanel Style="{StaticResource StationPanelStyle}">                
+            <StackPanel x:Name="Station_End" Style="{StaticResource StationPanelStyle}">                
                 <Image Grid.Column="0" Source="/Resources/Images/End.png" Style="{StaticResource StationImageStyle}"/>
                 <Label Grid.Column="1" Content="结束"/>
             </StackPanel>           

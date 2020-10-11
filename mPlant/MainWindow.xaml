@@ -6,7 +6,7 @@
         xmlns:avalonDock="https://github.com/Dirkster99/AvalonDock"
         xmlns:s="clr-namespace:mPlant"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" Closed="Window_Closed">
     <Window.Resources>
         <ContextMenu x:Key="DesignerCanvasContextMenu">
             <MenuItem Header="Paste" Command="{x:Static ApplicationCommands.Paste}">
@@ -58,6 +58,9 @@
                         </avalonDock:LayoutDocumentPane>
                         <avalonDock:LayoutDocumentPane x:Name="InfoPane" FloatingHeight="45">
                             <avalonDock:LayoutDocument Title="信息" ContentId="info">
+                                <s:Infor x:Name="Info">
+
+                                </s:Infor>
 
                             </avalonDock:LayoutDocument>
                         </avalonDock:LayoutDocumentPane>
@@ -65,7 +68,11 @@
 
                     <avalonDock:LayoutAnchorablePaneGroup x:Name="RightAnchorableGroup" Orientation="Vertical" DockWidth="250">
                         <avalonDock:LayoutAnchorablePane x:Name="RightPane" >
-                            <avalonDock:LayoutAnchorable Title="属性" ContentId="Property"/>
+                            <avalonDock:LayoutAnchorable Title="属性" ContentId="PropertyPanel">
+                                <s:Property x:Name="Property">
+                                    
+                                </s:Property>
+                            </avalonDock:LayoutAnchorable>
                         </avalonDock:LayoutAnchorablePane>
                     </avalonDock:LayoutAnchorablePaneGroup>
 

@@ -58,4 +58,13 @@ namespace mPlant
         // 拖拽组件的尺寸
         public Size? DesiredSize { get; set; }
     }
+
+    public enum Station
+    {
+        Station_Null,
+        Station_Start,
+        Station_Process,
+        Station_Buffer,
+        Station_End
+    }
 }

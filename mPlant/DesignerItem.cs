@@ -123,7 +123,7 @@ namespace mPlant
         protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
         {
             base.OnPreviewMouseDown(e);
-            DesignerCanvas designer = VisualTreeHelper.GetParent(this) as DesignerCanvas;
+            DesignerCanvas designer = VisualTreeHelper.GetParent(this) as DesignerCanvas;            
 
             if (designer != null)
             {
@@ -139,6 +139,23 @@ namespace mPlant
                 else if (!this.IsSelected)
                 {
                     designer.SelectionService.SelectItem(this);
+                    var stackPanel = this.Content as StackPanel;
+                    var scrollViewer = designer.Parent as ScrollViewer;
+                    var dockingManager = scrollViewer.Parent as AvalonDock.DockingManager;
+                    var layoutAnchorablePaneGroup = dockingManager.Layout.RootPanel.Children[2] as AvalonDock.Layout.LayoutAnchorablePaneGroup;
+                    var layoutAnchorablePane = layoutAnchorablePaneGroup.Children[0] as AvalonDock.Layout.LayoutAnchorablePane;
+                    var layoutAnchorable = layoutAnchorablePane.Children[0] as AvalonDock.Layout.LayoutAnchorable;
+                    var property = layoutAnchorable.Content as Property;
+
+                    switch (stackPanel.Name)
+                    {
+                        case "Station_Start": property.PropertyType = Station.Station_Start; break;
+                        case "Station_Process": property.PropertyType = Station.Station_Process; break;
+                        case "Station_Buffer": property.PropertyType = Station.Station_Buffer; break;
+                        case "Station_End": property.PropertyType = Station.Station_End; break;
+                        default: property.PropertyType = Station.Station_Null; break;
+                    }
+
                 }
                 Focus();
             }

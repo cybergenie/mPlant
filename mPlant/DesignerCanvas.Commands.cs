@@ -4,13 +4,19 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Shapes;
 using System.Xml;
 using System.Xml.Linq;
+using AvalonDock.Controls;
 using Microsoft.Win32;
 
 namespace mPlant
@@ -32,6 +38,9 @@ namespace mPlant
         public static RoutedCommand DistributeHorizontal = new RoutedCommand();
         public static RoutedCommand DistributeVertical = new RoutedCommand();
         public static RoutedCommand SelectAll = new RoutedCommand();
+        public static RoutedCommand StartSim = new RoutedCommand();
+        public static RoutedCommand SuspendSim = new RoutedCommand();
+        public static RoutedCommand StopSim = new RoutedCommand();
 
         public DesignerCanvas()
         {
@@ -43,7 +52,7 @@ namespace mPlant
             this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Copy, Copy_Executed, Copy_Enabled));
             this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Paste, Paste_Executed, Paste_Enabled));
             this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Delete, Delete_Executed, Delete_Enabled));
-            this.CommandBindings.Add(new CommandBinding(DesignerCanvas.Group, Group_Executed, Group_Enabled));
+            this.CommandBindings.Add(new CommandBinding(DesignerCanvas.Group, Group_Executed, Group_Enabled));            
             this.CommandBindings.Add(new CommandBinding(DesignerCanvas.Ungroup, Ungroup_Executed, Ungroup_Enabled));
             this.CommandBindings.Add(new CommandBinding(DesignerCanvas.BringForward, BringForward_Executed, Order_Enabled));
             this.CommandBindings.Add(new CommandBinding(DesignerCanvas.BringToFront, BringToFront_Executed, Order_Enabled));
@@ -57,7 +66,10 @@ namespace mPlant
             this.CommandBindings.Add(new CommandBinding(DesignerCanvas.AlignRight, AlignRight_Executed, Align_Enabled));
             this.CommandBindings.Add(new CommandBinding(DesignerCanvas.DistributeHorizontal, DistributeHorizontal_Executed, Distribute_Enabled));
             this.CommandBindings.Add(new CommandBinding(DesignerCanvas.DistributeVertical, DistributeVertical_Executed, Distribute_Enabled));
-            this.CommandBindings.Add(new CommandBinding(DesignerCanvas.SelectAll, SelectAll_Executed));
+            this.CommandBindings.Add(new CommandBinding(DesignerCanvas.SelectAll, SelectAll_Executed));           
+            this.CommandBindings.Add(new CommandBinding(DesignerCanvas.StartSim, Start_Sim));
+            this.CommandBindings.Add(new CommandBinding(DesignerCanvas.SuspendSim, Suspend_Sim));
+            this.CommandBindings.Add(new CommandBinding(DesignerCanvas.StopSim, Stop_Sim));
             SelectAll.InputGestures.Add(new KeyGesture(Key.A, ModifierKeys.Control));
 
             this.AllowDrop = true;
@@ -165,6 +177,71 @@ namespace mPlant
         }
 
         #endregion
+
+         void PrintPoint()
+        {
+           
+        }
+
+
+        public bool temp = false;
+        test _test;
+        private void Start_Sim(object sender, ExecutedRoutedEventArgs e)
+        {
+            Ellipse mydraw = new Ellipse();
+            mydraw.Height = 30;
+            mydraw.Width = 30;
+            mydraw.Fill = Brushes.Red;
+
+            DesignerCanvas.SetRight(mydraw, 20);
+            DesignerCanvas.SetTop(mydraw, 20);
+            Canvas.SetZIndex(mydraw, this.Children.Count);
+            this.Children.Add(mydraw);
+
+            _test = new test();
+            _test.WindowStartupLocation = WindowStartupLocation.Manual;
+            _test.Owner = (Window)this.FindVisualTreeRoot();
+            _test.Left = 1400;
+            _test.Top = 400;
+            _test.Show();
+
+
+        }
+
+       
+
+        private void Suspend_Sim(object sender, ExecutedRoutedEventArgs e)
+        {
+            Ellipse mydraw = new Ellipse();
+            mydraw.Height = 30;
+            mydraw.Width = 30;
+            mydraw.Fill = Brushes.Yellow;
+
+            DesignerCanvas.SetRight(mydraw, 20);
+            DesignerCanvas.SetTop(mydraw, 20);
+            Canvas.SetZIndex(mydraw, this.Children.Count);
+            this.Children.Add(mydraw);
+
+
+
+
+        }
+
+        private void Stop_Sim(object sender, ExecutedRoutedEventArgs e)
+        {
+            Ellipse mydraw = new Ellipse();
+            mydraw.Height = 40;
+            mydraw.Width = 40;
+            mydraw.Fill = Brushes.White;
+
+
+            DesignerCanvas.SetRight(mydraw, 18);
+            DesignerCanvas.SetTop(mydraw, 18);
+            Canvas.SetZIndex(mydraw, this.Children.Count);
+            this.Children.Add(mydraw);
+
+            _test.Close();
+        }
 
         #region Paste Command
 

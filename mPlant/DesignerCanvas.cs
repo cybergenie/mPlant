@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -11,11 +12,29 @@ using System.Xml;
 
 namespace mPlant
 {
-    public partial class DesignerCanvas : Canvas
+    public partial class DesignerCanvas : Canvas, INotifyPropertyChanged
     {
         private Point? rubberbandSelectionStartPoint = null;
+        private bool test = true;
+
+        
 
         private SelectionService selectionService;
+
+        public bool Test
+        {
+            set { test = value; OnPropertyChanged("Test"); }
+            get { return test; }
+        }
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            if (this.PropertyChanged != null)
+                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
         internal SelectionService SelectionService
         {
             get
@@ -82,7 +101,7 @@ namespace mPlant
 
                 if (content != null)
                 {
-                    newItem = new DesignerItem();
+                    newItem = new DesignerItem();                   
                     newItem.Content = content;
 
                     StackPanel panel = content as StackPanel;
@@ -163,5 +182,7 @@ namespace mPlant
                     decorator.Template = template;
             }
         }
+
+       
     }
 }

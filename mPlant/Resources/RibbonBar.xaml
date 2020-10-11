@@ -109,6 +109,20 @@
             </Fluent:RibbonGroupBox>
         </Fluent:RibbonTabItem>
 
+        <Fluent:RibbonTabItem Header="仿真" Width="65">
+            <Fluent:RibbonGroupBox x:Name="gbSimlation" Header="仿真">
+                <Fluent:Button Header="开始" LargeIcon="/Resources/Images/Start.png" Size="Large" Margin="5,0,5,0" ToolTip="开始"
+                                Command="{x:Static s:DesignerCanvas.StartSim}"
+                               CommandTarget="{Binding ElementName=NewProject}"/>
+                <Fluent:Button Header="暂停" LargeIcon="/Resources/Images/Process.png" Size="Large" Margin="5,0,5,0" ToolTip="暂停"
+                               Command="{x:Static s:DesignerCanvas.SuspendSim}"
+                               CommandTarget="{Binding ElementName=NewProject}"/>
+                <Fluent:Button Header="停止" LargeIcon="/Resources/Images/Buffer.png" Size="Large" Margin="5,0,5,0" ToolTip="停止"
+                               Command="{x:Static s:DesignerCanvas.StopSim}"
+                               CommandTarget="{Binding ElementName=NewProject}"/>                
+            </Fluent:RibbonGroupBox>
+        </Fluent:RibbonTabItem>
+
     </Fluent:Ribbon>
 
 </ResourceDictionary>

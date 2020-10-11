@@ -120,6 +120,26 @@
         </Setter>
     </Style>
 
+    <Style TargetType="{x:Type Shape}" x:Key="simLight">
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="Stroke" Value="Red" />
+        <Setter Property="StrokeThickness" Value=".5" />
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Height" Value="20" />
+        <Setter Property="Margin" Value="-2" />
+        <Setter Property="Fill">
+            <Setter.Value>
+                <SolidColorBrush Color="Red"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <ControlTemplate x:Key="SimLight">
+        <Grid>
+            <Ellipse Style="{StaticResource simLight}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Grid>
+    </ControlTemplate>
+    
     <!-- ConnectorDecoratorTemplate Default Template -->
     <ControlTemplate x:Key="ConnectorDecoratorTemplate" TargetType="{x:Type Control}">
         <Grid Margin="-5">
@@ -144,6 +164,17 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <ControlTemplate x:Key="sim_End" TargetType="Control">
+        <Grid>            
+            <Grid.RowDefinitions>
+                <RowDefinition Height="35"/>
+                <RowDefinition Height="35"/>                
+            </Grid.RowDefinitions>
+            <Label Content="每小时吞吐量（GPH）：" Margin="10,5,0,5"/>
+            <TextBox  Grid.Row="1" Margin="0,5,10,5"/>
+        </Grid>
+    </ControlTemplate>
 
     <ControlTemplate x:Key="ResizeDecoratorTemplate" TargetType="{x:Type Control}">
         <Grid IsHitTestVisible="False" Opacity="1" Margin="-3">
@@ -179,6 +210,13 @@
                 <ControlTemplate TargetType="{x:Type s:DesignerItem}">
                     <Grid DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}"
                         ContextMenu="{StaticResource DesignerItemContextMenu}">
+
+                        <!-- PART_ResizeDecorator -->
+                        <Control x:Name="Part_End" 
+                                 Visibility="Collapsed"
+                                 Template="{StaticResource SimLight}"/>
+                        <!-- PART_ContentPresenter -->
+
                         <!-- PART_DragThumb -->
                         <c:DragThumb x:Name="PART_DragThumb" 
                                      Cursor="SizeAll"/>
@@ -216,6 +254,10 @@
                         </DataTrigger>
                         <DataTrigger Value="True" Binding="{Binding RelativeSource={RelativeSource Self},Path=IsGroup}">
                             <Setter TargetName="PART_ConnectorDecorator" Property="Visibility" Value="Hidden"/>
+                        </DataTrigger>
+
+                        <DataTrigger Value="True" Binding="{Binding RelativeSource={RelativeSource Self},Path=Test}">
+                            <Setter TargetName="Part_End" Property="Visibility" Value="Visible"/>
                         </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

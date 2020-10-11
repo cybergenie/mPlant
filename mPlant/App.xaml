@@ -9,6 +9,8 @@
                 <ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Generic.xaml"/>                
                 <ResourceDictionary Source="/Resources/RibbonBar.xaml"/>                
                 <ResourceDictionary Source="/Resources/ProcessStations.xaml"/>
+                <ResourceDictionary Source="/Resources/Property.xaml"/>
+                <ResourceDictionary Source="/Resources/Infor.xaml"/>
                 <ResourceDictionary Source="/Resources/Styles/Expander.xaml"/>
                 <ResourceDictionary Source="/Resources/Styles/Toolbox.xaml"/>
                 <ResourceDictionary Source="/Resources/Styles/ToolboxItem.xaml"/>
